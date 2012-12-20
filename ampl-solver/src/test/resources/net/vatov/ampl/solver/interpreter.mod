@@ -1,0 +1,40 @@
+var x1 := 2;
+var x2 := x1 + 1;
+var x3 := -x1;
+var x4 := +x1;
+
+var v1 := abs(-1);
+var v2 := acos(0.5);
+var v3 := acosh(4);
+var v4 := asin(1);
+var v5 := asinh(1);
+var v6 := atan(1);
+var v7 := atan2(1,2);
+var v8 := atanh(0);
+var v9 := ceil(1.1);
+var v10 := cos(1);
+var v11 := exp(1);
+var v12 := floor(1.1);
+var v13 := log(1);
+var v14 := log10(1);
+var v15 := max(1+1, 1+2, 6, 6^2, 0);
+var v16 := min(1+1, 1+2, 6, 6^2, 0);
+var v17 := precision(1.12345, 2);
+var v18 := round(1.12345);
+var v19 := round(1.12345, 2);
+var v20 := sin(1);
+var v21 := sinh(1);
+var v22 := sqrt(4);
+var v23 := tan(1);
+var v24 := tanh(1);
+var v25 := time();
+var v26 := trunc(1.123456);
+var v27 := trunc(1.123456, 2);
+var v28 := trunc(1.125431, 2);
+var v29 := trunc(0-1.1269, 2);
+var v30 := trunc(0-1.1211, 2);
+
+maximize goal1: x1 + 2*x2;
+
+c1: x1 + x2 <= 15;
+c2: x2 >= 0;
