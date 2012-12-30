@@ -30,9 +30,9 @@ public class StdUserIO implements UserIO {
 
     public Integer getInt(Integer defaultValue, String question) {
         if (null != defaultValue) {
-            out.println(String.format("%s [%d]: ", question, defaultValue));
+            out.print(String.format("%s [%d]: ", question, defaultValue));
         } else {
-            out.println(question + ": ");
+            out.print(question + ": ");
         }
         return getInt();
     }
@@ -44,9 +44,9 @@ public class StdUserIO implements UserIO {
 
     public Boolean getYesNo(Boolean defaultValue, String question) {
         if (null != defaultValue) {
-            out.println(String.format("%s [%s]: ", question, defaultValue ? "yes" : "no"));
+            out.print(String.format("%s [%s]: ", question, defaultValue ? "yes" : "no"));
         } else {
-            out.println(question + ": ");
+            out.print(question + ": ");
         }
         Scanner scanner = new Scanner(in);
         String line = scanner.nextLine();
@@ -58,5 +58,17 @@ public class StdUserIO implements UserIO {
             }
         }
         return line.trim().equalsIgnoreCase("yes");
+    }
+
+    @Override
+    public void refreshData(Object data) {
+        out.println(data);
+    }
+
+    @Override
+    public void pause(String question) {
+        out.println(question + ": ");
+        Scanner scanner = new Scanner(in);
+        scanner.nextLine();
     }
 }

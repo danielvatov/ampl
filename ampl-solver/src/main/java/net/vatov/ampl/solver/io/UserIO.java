@@ -10,6 +10,10 @@ public interface UserIO {
     
     public Boolean getYesNo(Boolean defaultValue, String question);
 
+    public void refreshData(Object data);
+    
+    public void pause(String msg);
+        
     public class Factory {
         public static UserIO createStdUserIO() {
             return new StdUserIO(System.in, System.out);
