@@ -17,27 +17,45 @@ GT : '>';
 LT : '<';
 DEFAULT_ASSIGN : ':=';
 
-OP_NAME
-    : 'union'
-    | 'inter'
-	;
+UNION : 'union';
+DIFF : 'diff';
+SYMDIFF : 'symdiff';
+INTER : 'inter';
+CROSS : 'cross';
 
-SET_OP
-    : 'diff'
-    | 'symdiff'
-    | 'cross'
-    ;
-
+SET_ORDERED : 'ordered';
+SET_CIRCULAR : 'circular';
 /*
 RELOP
     : CONSTR_RELOP
     | LT
     | EQ
+    | GTE
+    | LTE
     | NEQ
     | DIF
     | GT
     ;
 */
+  
+fragment COMPARE_OP
+    : LT
+    | EQ
+    | GTE
+    | LTE
+    | NEQ
+    | GT
+    ;
+
+        
+fragment OR: 'or' | '||';
+
+fragment AND: 'and' | '&&';
+
+LOGIC_OP
+    : OR
+    | AND
+    ;
 
 PLUS: '+';
 MINUS: '-';
@@ -73,6 +91,10 @@ TAN: 'tan';
 TANH: 'tanh';
 TIME: 'time';
 TRUNC: 'trunc';
+
+DIMEN: 'dimen';
+WITHIN: 'within';
+DEFAULT: 'default';
 
 NAME: ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|DEC_DIGIT)* ;
 

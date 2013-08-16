@@ -10,10 +10,13 @@ import AmplLexer;
 tokens {
     PARAM_DECL;
     VAR_DECL;
+    SET_DECL;
     DEFAULT_ASSIGN;
     INTEGER;
     BINARY;
     SYMBOLIC;
+    MEMBER_ENUM;
+    SET_RANGE;
 }
 
 @header {package net.vatov.ampl;}
@@ -59,20 +62,31 @@ constraint
 /*
  * End constraint
  */
-set_decl:
-        'set' NAME alias? indexing? (set_attributes)? ';'
+
+/*
+ * sets
+ */
+set_decl
+    : 'set' NAME alias? indexing? set_attributes? ';'
+        -> ^(SET_DECL NAME alias? indexing? set_attributes?)
     ;
 
-set_attributes:
-        (set_attribute (','? set_attribute)*)
+set_attributes
+    : set_attribute (','? set_attribute)* -> set_attribute+
     ;
 
 set_attribute:
-      'dimen' INT
-    | 'within' sexpr
-    | ASSIGN sexpr
-    | 'default' sexpr
+      DIMEN INT -> ^(DIMEN INT)
+    | WITHIN sexpr -> ^(WITHIN sexpr)
+    | ASSIGN sexpr -> ^(ASSIGN sexpr)
+    | DEFAULT sexpr -> ^(DEFAULT sexpr)
+    | SET_ORDERED
+    | SET_CIRCULAR
     ;
+
+/*
+ * end sets
+ */
 
 /*
  * parameters
@@ -182,9 +196,8 @@ alias:
         NAME
     ;
 
-indexing:
-      '{' sexpr_list '}'
-//    | '{' sexpr_list ':' lexpr '}'
+indexing
+    : '{' sexpr_list ( ':' lexpr )? '}'
     ;
 
 sexpr_list:
@@ -192,19 +205,31 @@ sexpr_list:
     | sexpr (',' sexpr)*
     ;
 
-sexpr: simple_sexpr (sexpr_setops simple_sexpr)? ;
+sexpr: uds_sexpr ((UNION^|DIFF^|SYMDIFF^) uds_sexpr)* ;
 
-sexpr_setops
-	:	SET_OP
-	|	OP_NAME
-	;
+uds_sexpr : inter_sexpr (INTER^ inter_sexpr)*;
 
-simple_sexpr:
-      ('{' (member (',' member)* )? '}')
-//    | (OP_NAME indexing sexpr)
-    | '(' sexpr ')'
+inter_sexpr : set_ctor (CROSS set_ctor)*;
+
+set_ctor
+options { backtrack = true; }
+    : expr '..' expr ('by' expr)? -> ^(SET_RANGE expr expr expr?)
+    | simple_sexpr
     ;
 
-member: STRING|number;
+simple_sexpr
+    : '{' (member (',' member)* )? '}' -> ^(MEMBER_ENUM member*)
+//    | (OP_NAME indexing sexpr)
+    | '(' sexpr ')' -> sexpr
+    | NAME
+    ;
+
+lexpr
+    : expr (COMPARE_OP expr)?
+//    | lexpr LOGIC_OP lexpr
+//    | '(' lexpr ')'
+    ;
+
+member: STRING|number|NAME;
 
 number: (INT | FLOAT);

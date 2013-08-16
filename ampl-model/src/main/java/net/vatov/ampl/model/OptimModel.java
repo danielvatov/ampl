@@ -56,6 +56,15 @@ public class OptimModel {
         return false;
     }
 
+    public boolean symbolIsDefined(String name) {
+        for (SymbolDeclaration sd : symbolDeclarations) {
+            if (sd.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public Double getParamValue(String name) {
         for (SymbolDeclaration sd : symbolDeclarations) {
             if (sd.getName().equals(name) && SymbolType.PARAM == sd.getType()) {
@@ -87,6 +96,33 @@ public class OptimModel {
             }
         }
         throw new ModelException("var " + name + " not defined");
+    }
+
+    public SymbolDeclaration getSetRef(String name) {
+        for (SymbolDeclaration sd : symbolDeclarations) {
+            if (sd.getName().equals(name) && SymbolType.SET == sd.getType()) {
+                return sd;
+            }
+        }
+        throw new ModelException("set " + name + " not defined");
+    }
+    
+    public SymbolDeclaration getSymbolRef(String name) {
+        for (SymbolDeclaration sd : symbolDeclarations) {
+            if (sd.getName().equals(name)) {
+                return sd;
+            }
+        }
+        throw new ModelException("symbol " + name + " not defined");
+    }
+
+    public SymbolDeclaration getParamRef(String name) {
+        for (SymbolDeclaration sd : symbolDeclarations) {
+            if (sd.getName().equals(name) && SymbolType.PARAM == sd.getType()) {
+                return sd;
+            }
+        }
+        throw new ModelException("param " + name + " not defined");
     }
 
     public List<SymbolDeclaration> getVarRefs() {

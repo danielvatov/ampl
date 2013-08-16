@@ -11,27 +11,15 @@
     </parent>
     <artifactId>ampl-solver</artifactId>
     <name>ampl-solver</name>
-    <url>http://maven.apache.org</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    <repositories>
-        <repository>
-            <id>project_local</id>
-            <url>file://${basedir}/repo</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>net.vatov</groupId>
             <artifactId>ampl-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sf</groupId>
-            <artifactId>lpsolve-jni</artifactId>
-            <version>5.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

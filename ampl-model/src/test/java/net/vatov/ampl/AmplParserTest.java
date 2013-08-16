@@ -49,6 +49,7 @@ public class AmplParserTest {
                             || expressionType == Expression.ExpressionType.SYMREF);
                 }
                 assertTrue(sd.getName(), sd.getBindValue() == null);
+            } else if (sd.getType() == SymbolType.SET) {
             } else {
                 fail();
             }
@@ -68,6 +69,7 @@ public class AmplParserTest {
         assertEquals(16.0, model.getParamValue("test7"));
         assertEquals(-0.8888888888888888, model.getParamValue("test8"));
         assertEquals(0.25, model.getParamValue("test9"));
+        assertEquals(-15.4, model.getParamValue("test10"));
         assertNotNull(model.getVarRef("v1"));
         assertNotNull(model.getVarRef("v1").getLowerBound());
         assertNotNull(model.getVarRef("v1").getUpperBound());
@@ -119,37 +121,43 @@ public class AmplParserTest {
     public final void testBuiltin() throws AmplException, IOException {
         OptimModel model = loadModel("builtin.mod");
         assertEquals(29, model.getSymbolDeclarations().size());
-        validateBuiltin(model, "x1", BuiltinFunction.ABS,1);
-        validateBuiltin(model, "x2", BuiltinFunction.ACOS,1);
-        validateBuiltin(model, "x3", BuiltinFunction.ACOSH,1);
-        validateBuiltin(model, "x4", BuiltinFunction.ASIN,1);
-        validateBuiltin(model, "x5", BuiltinFunction.ASINH,1);
-        validateBuiltin(model, "x6", BuiltinFunction.ATAN,1);
-        validateBuiltin(model, "x7", BuiltinFunction.ATAN2,2);
-        validateBuiltin(model, "x8", BuiltinFunction.ATANH,1);
-        validateBuiltin(model, "x9", BuiltinFunction.CEIL,1);
-        validateBuiltin(model, "x10", BuiltinFunction.CTIME,0);
-        validateBuiltin(model, "x11", BuiltinFunction.CTIME,1);
-        validateBuiltin(model, "x12", BuiltinFunction.COS,1);
-        validateBuiltin(model, "x13", BuiltinFunction.EXP,1);
-        validateBuiltin(model, "x14", BuiltinFunction.FLOOR,1);
-        validateBuiltin(model, "x15", BuiltinFunction.LOG,1);
-        validateBuiltin(model, "x16", BuiltinFunction.LOG10,1);
-        validateBuiltin(model, "x17", BuiltinFunction.MAX,5);
-        validateBuiltin(model, "x18", BuiltinFunction.MIN,5);
-        validateBuiltin(model, "x19", BuiltinFunction.PRECISION,2);
-        validateBuiltin(model, "x20", BuiltinFunction.ROUND,1);
-        validateBuiltin(model, "x21", BuiltinFunction.ROUND,2);
-        validateBuiltin(model, "x22", BuiltinFunction.SIN,1);
-        validateBuiltin(model, "x23", BuiltinFunction.SINH,1);
-        validateBuiltin(model, "x24", BuiltinFunction.SQRT,1);
-        validateBuiltin(model, "x25", BuiltinFunction.TAN,1);
-        validateBuiltin(model, "x26", BuiltinFunction.TANH,1);
-        validateBuiltin(model, "x27", BuiltinFunction.TIME,0);
-        validateBuiltin(model, "x28", BuiltinFunction.TRUNC,1);
-        validateBuiltin(model, "x29", BuiltinFunction.TRUNC,2);
+        validateBuiltin(model, "x1", BuiltinFunction.ABS, 1);
+        validateBuiltin(model, "x2", BuiltinFunction.ACOS, 1);
+        validateBuiltin(model, "x3", BuiltinFunction.ACOSH, 1);
+        validateBuiltin(model, "x4", BuiltinFunction.ASIN, 1);
+        validateBuiltin(model, "x5", BuiltinFunction.ASINH, 1);
+        validateBuiltin(model, "x6", BuiltinFunction.ATAN, 1);
+        validateBuiltin(model, "x7", BuiltinFunction.ATAN2, 2);
+        validateBuiltin(model, "x8", BuiltinFunction.ATANH, 1);
+        validateBuiltin(model, "x9", BuiltinFunction.CEIL, 1);
+        validateBuiltin(model, "x10", BuiltinFunction.CTIME, 0);
+        validateBuiltin(model, "x11", BuiltinFunction.CTIME, 1);
+        validateBuiltin(model, "x12", BuiltinFunction.COS, 1);
+        validateBuiltin(model, "x13", BuiltinFunction.EXP, 1);
+        validateBuiltin(model, "x14", BuiltinFunction.FLOOR, 1);
+        validateBuiltin(model, "x15", BuiltinFunction.LOG, 1);
+        validateBuiltin(model, "x16", BuiltinFunction.LOG10, 1);
+        validateBuiltin(model, "x17", BuiltinFunction.MAX, 5);
+        validateBuiltin(model, "x18", BuiltinFunction.MIN, 5);
+        validateBuiltin(model, "x19", BuiltinFunction.PRECISION, 2);
+        validateBuiltin(model, "x20", BuiltinFunction.ROUND, 1);
+        validateBuiltin(model, "x21", BuiltinFunction.ROUND, 2);
+        validateBuiltin(model, "x22", BuiltinFunction.SIN, 1);
+        validateBuiltin(model, "x23", BuiltinFunction.SINH, 1);
+        validateBuiltin(model, "x24", BuiltinFunction.SQRT, 1);
+        validateBuiltin(model, "x25", BuiltinFunction.TAN, 1);
+        validateBuiltin(model, "x26", BuiltinFunction.TANH, 1);
+        validateBuiltin(model, "x27", BuiltinFunction.TIME, 0);
+        validateBuiltin(model, "x28", BuiltinFunction.TRUNC, 1);
+        validateBuiltin(model, "x29", BuiltinFunction.TRUNC, 2);
     }
-    
+
+    @Test
+    public final void testSets() throws Exception {
+        OptimModel model = loadModel("set.mod");
+        System.out.println(model.getSymbolDeclarations());
+    }
+
     private void validateBuiltin(OptimModel model, String varName, BuiltinFunction fType, int params) {
         SymbolDeclaration varRef = model.getVarRef(varName);
         Expression value = varRef.getValue();

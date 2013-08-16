@@ -9,12 +9,22 @@ package net.vatov.ampl;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.LinkedHashSet;
 
 import net.vatov.ampl.model.OptimModel;
 import net.vatov.ampl.model.SymbolDeclaration;
 import net.vatov.ampl.model.SymbolDeclaration.DeclarationAttributeEnum;
 import net.vatov.ampl.model.NodeValue.OperationType;
 import net.vatov.ampl.model.NodeValue.BuiltinFunction;
+import net.vatov.ampl.model.ModelException;
+import net.vatov.ampl.model.SetMember;
+import net.vatov.ampl.model.SetMember.SetMemberType;
+import net.vatov.ampl.model.SetExpression;
+import net.vatov.ampl.model.SetExpression.SetExpressionType;
+import net.vatov.ampl.model.SetNodeValue;
+import net.vatov.ampl.model.SetNodeValue.SetOperationType;
+import net.vatov.ampl.model.RangeValue;
 
 import net.vatov.ampl.model.Expression;
 import static net.vatov.ampl.model.Util.*;
@@ -29,7 +39,7 @@ model returns [OptimModel m]
 @init{
     $m = this.m;
 }
-    : (param_decl | var_decl)+ objective_decl* constraint*
+    : (param_decl | var_decl | set_decl)+ objective_decl* constraint*
     ;
 
 /*
@@ -86,6 +96,92 @@ param_attribute[Map<DeclarationAttributeEnum, Object> pda]
  * end parameters
  */
 
+/*
+ * sets
+ */
+set_decl returns [SymbolDeclaration sd]
+    : ^(SET_DECL NAME set_attributes?) {
+      $sd = SymbolDeclaration.createSetDeclaration($NAME.text);
+      $sd.setAttributes($set_attributes.sda);
+      m.addSymbolDeclaration($sd);
+    }
+    ;
+
+set_attributes returns [Map<DeclarationAttributeEnum, Object> sda]
+@init {
+    $sda = new HashMap<DeclarationAttributeEnum, Object>();
+}
+    : set_attribute[$sda]+
+    ;
+
+set_attribute[Map<DeclarationAttributeEnum, Object> sda]
+    : ^(DIMEN INT) { $sda.put(DeclarationAttributeEnum.SET_DIMEN, Integer.parseInt($INT.text)); }
+    | ^(WITHIN sexpr) { $sda.put(DeclarationAttributeEnum.SET_WITHIN, $sexpr.sex); }
+    | ^(ASSIGN sexpr) { $sda.put(DeclarationAttributeEnum.SET_ASSIGN, $sexpr.sex); }
+    | ^(DEFAULT sexpr) { $sda.put(DeclarationAttributeEnum.SET_DEFAULT, $sexpr.sex); }
+    | SET_ORDERED { $sda.put(DeclarationAttributeEnum.SET_ORDERED, true);}
+    | SET_CIRCULAR { $sda.put(DeclarationAttributeEnum.SET_CIRCULAR, true);}
+    ;
+
+/*
+sexpr_list:
+      member 'in' sexpr
+    | sexpr (',' sexpr)*
+    ;
+*/
+
+//TODO: change return type
+sexpr returns [SetExpression sex]
+  : ^(o = UNION a = sexpr b = sexpr) { 
+             $sex = new SetExpression(SetExpressionType.TREE,
+                                                                new SetNodeValue(SetOperationType.parse($o.text),
+                                                                                                      new SetExpression[] {$a.sex, $b.sex}));
+       }
+   | ^(o = DIFF a = sexpr b = sexpr) { 
+             $sex = new SetExpression(SetExpressionType.TREE,
+                                                                new SetNodeValue(SetOperationType.parse($o.text),
+                                                                                                      new SetExpression[] {$a.sex, $b.sex}));
+       }
+    | ^(o = SYMDIFF a = sexpr b = sexpr) { 
+             $sex = new SetExpression(SetExpressionType.TREE,
+                                                                new SetNodeValue(SetOperationType.parse($o.text),
+                                                                                                      new SetExpression[] {$a.sex, $b.sex}));
+       }
+     | ^(o = INTER a = sexpr b = sexpr) { 
+             $sex = new SetExpression(SetExpressionType.TREE,
+                                                                new SetNodeValue(SetOperationType.parse($o.text),
+                                                                                                      new SetExpression[] {$a.sex, $b.sex}));
+       }
+     | ^(o = CROSS a = sexpr b = sexpr) { 
+             $sex = new SetExpression(SetExpressionType.TREE,
+                                                                new SetNodeValue(SetOperationType.parse($o.text),
+                                                                                                      new SetExpression[] {$a.sex, $b.sex}));
+       }
+     | ^(SET_RANGE c = expr d = expr (s = expr)?) {
+                  $sex = new SetExpression(SetExpressionType.RANGE,
+                                                                new RangeValue($c.e, $d.e, $s.e));
+       }
+     | ^(MEMBER_ENUM {Set<SetMember> ms = new LinkedHashSet<SetMember>();} (member {ms.add($member.m);})*) { 
+          $sex = new SetExpression(SetExpression.SetExpressionType.ENUM, ms);
+              if (ms.isEmpty()) {
+                  ms = null;
+              }
+        }
+    //    | (OP_NAME indexing sexpr)
+    | NAME { 
+            $sex = new SetExpression(SetExpression.SetExpressionType.VARREF, m.getSetRef($NAME.text));
+            }
+  ;
+
+lexpr
+    : expr (COMPARE_OP expr)?
+//    | lexpr LOGIC_OP lexpr
+//    | '(' lexpr ')'
+    ;
+/*
+ * end sets
+ */
+ 
 /*
  * variables
  */
@@ -187,7 +283,7 @@ expr returns [Expression e]
             } else if (m.varIsDefined($NAME.text)) {
                 $e.setSymRef(m.getVarRef($NAME.text));
             } else {
-                throw new RuntimeException($NAME.line
+                throw new ModelException($NAME.line
                                            + ":" + $NAME.pos
                                            + " undefined symbol "
                                            + $NAME.text);
@@ -236,4 +332,19 @@ builtin_function returns [BuiltinFunction f, List<Expression> es]
 number returns [Double e]
     : INT {$e = new Double($INT.text);}
     | FLOAT {$e = new Double($FLOAT.text);}
+    ;
+
+member returns [SetMember m]
+    : STRING { $m = new SetMember($STRING.text, SetMemberType.STRING);}
+    | number { $m = new SetMember($number.e, SetMemberType.NUMBER);}
+    | NAME  {
+               if (this.m.symbolIsDefined($NAME.text)) {
+                   $m = new SetMember(this.m.getSymbolRef($NAME.text), SetMemberType.SYMREF);
+               } else {
+                   throw new ModelException($NAME.line
+                                           + ":" + $NAME.pos
+                                           + " undefined symbol "
+                                           + $NAME.text);
+               }
+            }
     ;

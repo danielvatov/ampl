@@ -8,13 +8,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import net.vatov.ampl.AmplException;
 import net.vatov.ampl.AmplParser;
 import net.vatov.ampl.model.OptimModel;
-import net.vatov.ampl.model.SymbolDeclaration;
-import net.vatov.ampl.solver.OptimModelInterpreter;
 
 import org.junit.Before;
 import org.junit.Test;

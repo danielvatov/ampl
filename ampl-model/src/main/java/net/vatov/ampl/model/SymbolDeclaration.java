@@ -14,11 +14,12 @@ public class SymbolDeclaration implements Cloneable {
      * атрибути в xml-а трябва да са първи TODO: Написаното по-горе да се оправи
      */
     public static enum DeclarationAttributeEnum {
-        INTEGER, VALUE, BINDED_VALUE, BINARY, LOWER_BOUND, UPPER_BOUND;
+        INTEGER, VALUE, BINDED_VALUE, BINARY, LOWER_BOUND, UPPER_BOUND,
+        SET_DIMEN, SET_WITHIN, SET_ASSIGN, SET_DEFAULT, SET_ORDERED, SET_CIRCULAR;
     }
 
     public static enum SymbolType {
-        PARAM, VAR;
+        PARAM, VAR, SET;
     }
 
     private String name;
@@ -119,6 +120,10 @@ public class SymbolDeclaration implements Cloneable {
         return new SymbolDeclaration(name, SymbolType.VAR);
     }
 
+    public static SymbolDeclaration createSetDeclaration(String name) {
+        return new SymbolDeclaration(name, SymbolType.SET);
+    }
+
     public static SymbolDeclaration createSymbolDeclaration(String name, SymbolType type) {
         return new SymbolDeclaration(name, type);
     }
@@ -142,17 +147,17 @@ public class SymbolDeclaration implements Cloneable {
         SymbolDeclaration o = (SymbolDeclaration) obj;
         return name.equals(o.name);
     }
-    
+
     @Override
     public Object clone() {
         SymbolDeclaration sd = createSymbolDeclaration(name, type);
         Map<DeclarationAttributeEnum, Object> a = new HashMap<SymbolDeclaration.DeclarationAttributeEnum, Object>();
         for (Map.Entry<DeclarationAttributeEnum, Object> e : attributes.entrySet()) {
             if (e.getValue() instanceof Expression) {
-                Expression ori = (Expression)(e.getValue());
+                Expression ori = (Expression) (e.getValue());
                 Expression exp = (Expression) ori.clone();
                 a.put(e.getKey(), exp);
-            } else if (e.getValue() instanceof Boolean){
+            } else if (e.getValue() instanceof Boolean) {
                 a.put(e.getKey(), e.getValue());
             } else {
                 throw new ModelException("Unsupported attribute for clone operation " + e.getKey());
