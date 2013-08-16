@@ -7,4 +7,8 @@ public class SolverIOException extends RuntimeException {
     public SolverIOException(String message) {
         super(message);
     }
+    
+    public SolverIOException(Throwable e) {
+        super(e);
+    }
 }

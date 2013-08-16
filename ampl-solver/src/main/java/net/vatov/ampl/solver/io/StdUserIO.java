@@ -1,12 +1,12 @@
 package net.vatov.ampl.solver.io;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
 
 public class StdUserIO implements UserIO {
-
     private InputStream in;
     private PrintStream out;
 
@@ -18,57 +18,80 @@ public class StdUserIO implements UserIO {
     public Integer getChoice(List<String> options, Integer defaultOption, String question) {
         int i = 1;
         for (String option : options) {
-            out.println(String.format("[%d]:\n%s", i, option));
+            this.out.println(String.format("[%d]:\n%s", new Object[] { Integer.valueOf(i), option }));
             i++;
         }
         Integer ret = getInt(defaultOption, question);
-        if (null == ret || ret < 1 || ret > options.size()) {
-            throw new SolverIOException("Invalid choice " + ret);
+        if ((null == ret) || (ret.intValue() < 1) || (ret.intValue() > options.size())) {
+            throw new InvalidUserInputException("Invalid choice " + ret);
         }
         return ret;
     }
 
     public Integer getInt(Integer defaultValue, String question) {
         if (null != defaultValue) {
-            out.print(String.format("%s [%d]: ", question, defaultValue));
-        } else {
-            out.print(question + ": ");
+            this.out.print(String.format("%s [%d]: ", new Object[] { question, defaultValue }));
+            Integer ret = getInt(true);
+            if (null == ret) {
+                return defaultValue;
+            }
+            return ret;
         }
-        return getInt();
+        this.out.print(question + ": ");
+        return getInt(false);
     }
 
-    private Integer getInt() {
-        Scanner scanner = new Scanner(in);
-        return scanner.nextInt();
+    private Integer getInt(boolean hasDefault) {
+        Scanner scanner = new Scanner(this.in);
+        String line = scanner.nextLine();
+        if (("".equals(line)) && (hasDefault))
+            return null;
+        try {
+            return Integer.valueOf(Integer.parseInt(line));
+        } catch (NumberFormatException e) {
+            throw new InvalidUserInputException(e.getMessage());
+        }
     }
 
     public Boolean getYesNo(Boolean defaultValue, String question) {
-        if (null != defaultValue) {
-            out.print(String.format("%s [%s]: ", question, defaultValue ? "yes" : "no"));
-        } else {
-            out.print(question + ": ");
+        if (null != defaultValue)
+            this.out.print(String.format("%s [%s]: ", new Object[] { question,
+                    defaultValue.booleanValue() ? "yes" : "no" }));
+        else {
+            this.out.print(question + ": ");
         }
-        Scanner scanner = new Scanner(in);
+        Scanner scanner = new Scanner(this.in);
         String line = scanner.nextLine();
-        if ((line == null || line.trim().isEmpty())) {
+        if ((line == null) || (line.trim().isEmpty())) {
             if (defaultValue != null) {
-                return  defaultValue;
-            } else {
-                throw new SolverIOException("Input missing");
+                return defaultValue;
             }
+            throw new InvalidUserInputException("Input missing");
         }
-        return line.trim().equalsIgnoreCase("yes");
+
+        return Boolean.valueOf(line.trim().equalsIgnoreCase("yes"));
     }
 
-    @Override
     public void refreshData(Object data) {
-        out.println(data);
+        this.out.println(data);
     }
 
-    @Override
     public void pause(String question) {
-        out.println(question + ": ");
-        Scanner scanner = new Scanner(in);
+        this.out.println(question + ": ");
+        Scanner scanner = new Scanner(this.in);
         scanner.nextLine();
+    }
+
+    public void message(String question) {
+        this.out.println(question + ": ");
+    }
+
+    public void close() {
+        try {
+            this.in.close();
+        } catch (IOException e) {
+            throw new SolverIOException(e);
+        }
+        this.out.close();
     }
 }
