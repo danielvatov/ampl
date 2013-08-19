@@ -4,7 +4,7 @@
     <parent>
         <artifactId>ampl</artifactId>
         <groupId>net.vatov</groupId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>ampl-server</artifactId>
     <packaging>war</packaging>
