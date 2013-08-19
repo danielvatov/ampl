@@ -15,7 +15,7 @@
         <dependency>
             <groupId>net.vatov</groupId>
             <artifactId>ampl-model</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
