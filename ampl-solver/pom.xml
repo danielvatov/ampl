@@ -4,7 +4,7 @@
     <parent>
         <artifactId>ampl</artifactId>
         <groupId>net.vatov</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>ampl-solver</artifactId>
     <name>ampl-solver</name>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>net.vatov</groupId>
             <artifactId>ampl-model</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
