@@ -90,7 +90,7 @@
                             <goals>
                                 <goal>jar</goal>
                             </goals>
-                            <phase>install</phase>
+                            <phase>package</phase>
                         </execution>
                     </executions>
                 </plugin>
@@ -103,7 +103,7 @@
                             <goals>
                                 <goal>jar</goal>
                             </goals>
-                            <phase>install</phase>
+                            <phase>package</phase>
                         </execution>
                     </executions>
                     <version>2.2.1</version>
@@ -137,7 +137,7 @@
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
-                                <phase>verify</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
