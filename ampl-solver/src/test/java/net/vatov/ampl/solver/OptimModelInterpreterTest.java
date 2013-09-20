@@ -79,23 +79,23 @@ public class OptimModelInterpreterTest {
     public void testBuiltinFunctions() {
         interpreter.initialBind();
         
-        assertValiable("v1", 1.0);
-        assertValiable("v2", 1.0471975511965979);
-        assertValiable("v3", 2.0634370688955608);
-        assertValiable("v4", 1.5707963267948966);
-        assertValiable("v15", 36.);
-        assertValiable("v16", 0.);
+        assertVariable("v1", 1.0);
+        assertVariable("v2", 1.0471975511965979);
+        assertVariable("v3", 2.0634370688955608);
+        assertVariable("v4", 1.5707963267948966);
+        assertVariable("v15", 36.);
+        assertVariable("v16", 0.);
               
         assertNotNull(model.getVarRef("v25").getValue().getTreeValue().getBuiltinFunction().toString(), model.getVarRef("v25").getBindValue());
         
-        assertValiable("v26", 1.0);
-        assertValiable("v27", 1.12);
-        assertValiable("v28", 1.12);
-        assertValiable("v29", -1.12);
-        assertValiable("v30", -1.12);
+        assertVariable("v26", 1.0);
+        assertVariable("v27", 1.12);
+        assertVariable("v28", 1.12);
+        assertVariable("v29", -1.12);
+        assertVariable("v30", -1.12);
     }
 
-    private void assertValiable(String name, Double value) {
+    private void assertVariable(String name, Double value) {
         assertEquals(model.getVarRef(name).getValue().getTreeValue().getBuiltinFunction().toString(),
                 value, model.getVarRef(name).getBindValue(), 0.0001);
     }
