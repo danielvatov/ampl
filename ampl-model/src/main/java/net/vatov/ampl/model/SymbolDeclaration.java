@@ -61,16 +61,18 @@ public class SymbolDeclaration implements Cloneable {
 
     public Boolean isInteger() {
         if (null == attributes) {
-            return null;
+            return false;
         }
-        return (Boolean) attributes.get(DeclarationAttributeEnum.INTEGER);
+        Object o = attributes.get(DeclarationAttributeEnum.INTEGER);
+        return o == null? false:(Boolean) o;
     }
 
     public Boolean isBinary() {
         if (null == attributes) {
-            return null;
+            return false;
         }
-        return (Boolean) attributes.get(DeclarationAttributeEnum.BINARY);
+        Object o = attributes.get(DeclarationAttributeEnum.BINARY);
+        return o == null? false:(Boolean) o; 
     }
 
     /**
