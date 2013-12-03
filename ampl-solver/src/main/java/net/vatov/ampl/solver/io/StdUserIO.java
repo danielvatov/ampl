@@ -94,4 +94,23 @@ public class StdUserIO implements UserIO {
         }
         this.out.close();
     }
+
+    @Override
+    public String getString(String defaultValue, String question) {
+        if (null != defaultValue && defaultValue.length() > 0)
+            this.out.print(String.format("%s [%s]: ", new Object[] { question, defaultValue }));
+        else {
+            this.out.print(question + ": ");
+        }
+        Scanner scanner = new Scanner(this.in);
+        String line = scanner.nextLine();
+        if ((line == null) || (line.trim().isEmpty())) {
+            if (defaultValue != null) {
+                return defaultValue;
+            }
+            throw new InvalidUserInputException("Input missing");
+        }
+
+        return line;
+    }
 }

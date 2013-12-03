@@ -12,6 +12,8 @@ public interface UserIO {
     
     public Boolean getYesNo(Boolean defaultValue, String question);
 
+    public String getString(String defaultValue, String question);
+
     public void refreshData(Object data);
     
     public void pause(String msg);
