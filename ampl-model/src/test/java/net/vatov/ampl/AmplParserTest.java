@@ -88,9 +88,11 @@ public class AmplParserTest {
         assertEquals(2, model.getObjectives().size());
         assertEquals(Goal.MAXIMIZE, model.getObjectives().get(0).getGoal());
         assertEquals(Goal.MINIMIZE, model.getObjectives().get(1).getGoal());
-        assertEquals(2, model.getConstraints().size());
-        assertEquals("constr1", model.getConstraints().get(0).getName());
-        assertEquals("constr2", model.getConstraints().get(1).getName());
+        assertEquals(4, model.getConstraints().size());
+        assertEquals("constr1", model.getConstraints().get(2).getName());
+        assertEquals("constr2", model.getConstraints().get(3).getName());
+        assertEquals("var_v1_lower", model.getConstraints().get(0).getName());
+        assertEquals("var_v1_upper", model.getConstraints().get(1).getName());
     }
 
     @Test
@@ -113,7 +115,7 @@ public class AmplParserTest {
     public final void testLeonid2() throws AmplException, IOException {
         OptimModel model = loadModel("leonid2.mod");
         assertEquals(11, model.getSymbolDeclarations().size());
-        assertEquals(8, model.getConstraints().size());
+        assertEquals(16, model.getConstraints().size());
         assertEquals(7, model.getObjectives().size());
     }
 

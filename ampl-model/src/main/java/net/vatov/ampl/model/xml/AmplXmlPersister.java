@@ -34,6 +34,7 @@ public class AmplXmlPersister {
     private NameCoder coder = new NoNameCoder();
     
     public AmplXmlPersister() {
+        xstream.setMode(XStream.NO_REFERENCES); // lower/upper bound constrains requirement
         xstream.alias("model", OptimModel.class);
         xstream.alias("symbol", SymbolDeclaration.class);
         xstream.alias("objective", ObjectiveDeclaration.class);

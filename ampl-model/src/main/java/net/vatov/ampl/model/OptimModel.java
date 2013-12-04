@@ -6,6 +6,7 @@ package net.vatov.ampl.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.vatov.ampl.model.ConstraintDeclaration.RelopType;
 import net.vatov.ampl.model.Expression.ExpressionType;
 import net.vatov.ampl.model.ObjectiveDeclaration.Goal;
 import net.vatov.ampl.model.SymbolDeclaration.SymbolType;
@@ -19,7 +20,8 @@ public class OptimModel {
     private ArrayList<SymbolDeclaration>     symbolDeclarations = new ArrayList<SymbolDeclaration>();
     private ArrayList<ObjectiveDeclaration>  objectives         = new ArrayList<ObjectiveDeclaration>();
     private ArrayList<ConstraintDeclaration> constraints        = new ArrayList<ConstraintDeclaration>();
-
+    private String varConstraintPrefix = "var_";
+    
     public ConstraintDeclaration addConstraint(String name, String relop,
             Expression aExpr, Expression bExpr) {
         ConstraintDeclaration c = new ConstraintDeclaration(name, relop, aExpr, bExpr);
@@ -35,7 +37,15 @@ public class OptimModel {
         return o;
     }
 
-    public List<ConstraintDeclaration> getConstraints() {
+    /**
+     * Set prefix for the generated names of lower and upper bound constrains
+     * @param prefix
+     */
+    public void setVariableConstraintsPrefix(String prefix) {
+        varConstraintPrefix = prefix;
+    }
+
+    public List<ConstraintDeclaration> getConstraints() {        
         return constraints;
     }
 
@@ -141,6 +151,26 @@ public class OptimModel {
                     + " " + decl.getName() + " already defined");
         }
         symbolDeclarations.add(decl);
+        updateConstraints(decl);
+    }
+
+    private void updateConstraints(SymbolDeclaration decl) {
+        Expression lowerBound = decl.getLowerBound();
+        Expression upperBound = decl.getUpperBound();
+        if (null != lowerBound) {
+            constraints.add(new ConstraintDeclaration(varConstraintPrefix + decl.getName() + "_lower",
+                    RelopType.GE, wrapAsExpression(decl), lowerBound));
+        }
+        if (null != upperBound) {
+            constraints.add(new ConstraintDeclaration(varConstraintPrefix + decl.getName() + "_upper",
+                    RelopType.LE, wrapAsExpression(decl), upperBound));
+        }
+    }
+
+    private Expression wrapAsExpression(SymbolDeclaration decl) {
+        Expression e = new Expression();
+        e.setSymRef(decl);
+        return e;
     }
 
     @Override
