@@ -96,7 +96,7 @@ DIMEN: 'dimen';
 WITHIN: 'within';
 DEFAULT: 'default';
 
-NAME: ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|DEC_DIGIT)* ;
+NAME: ('a'..'z'|'A'..'Z') ('a'..'z'|'A'..'Z'|DEC_DIGIT|'_')* ;
 
 fragment
 DEC_DIGIT: '0'..'9'	;

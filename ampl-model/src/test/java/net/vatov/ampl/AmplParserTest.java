@@ -9,6 +9,7 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 import net.vatov.ampl.AmplException;
 import net.vatov.ampl.AmplParser;
 import net.vatov.ampl.model.Expression;
+import net.vatov.ampl.model.ModelException;
 import net.vatov.ampl.model.OptimModel;
 import net.vatov.ampl.model.SymbolDeclaration;
 import net.vatov.ampl.model.Expression.ExpressionType;
@@ -57,6 +59,13 @@ public class AmplParserTest {
         return model;
     }
 
+    @Test(expected=AmplException.class)
+    public final void testVarPrefix() {
+        ByteArrayInputStream ampl = new ByteArrayInputStream("var var_name;".getBytes());
+        AmplParser p = new AmplParser();
+        p.parse(ampl);
+    }
+    
     @Test
     public final void testParse() throws AmplException, IOException {
         OptimModel model = loadModel("params.mod");

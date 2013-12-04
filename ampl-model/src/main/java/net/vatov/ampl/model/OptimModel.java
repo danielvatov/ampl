@@ -37,14 +37,6 @@ public class OptimModel {
         return o;
     }
 
-    /**
-     * Set prefix for the generated names of lower and upper bound constrains
-     * @param prefix
-     */
-    public void setVariableConstraintsPrefix(String prefix) {
-        varConstraintPrefix = prefix;
-    }
-
     public List<ConstraintDeclaration> getConstraints() {        
         return constraints;
     }
@@ -150,8 +142,16 @@ public class OptimModel {
             throw new ModelException(decl.getType().toString().toLowerCase()
                     + " " + decl.getName() + " already defined");
         }
+        checkName(decl.getName());
         symbolDeclarations.add(decl);
         updateConstraints(decl);
+    }
+
+    private void checkName(String name) {
+        if (name.startsWith(varConstraintPrefix)) {
+            throw new ModelException("identifier can not start with " + varConstraintPrefix + " (" + name
+                    + "). It is reserved for variable bound constraints!");
+        }
     }
 
     private void updateConstraints(SymbolDeclaration decl) {
