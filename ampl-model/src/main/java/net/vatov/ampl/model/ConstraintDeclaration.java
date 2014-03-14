@@ -11,11 +11,9 @@ public class ConstraintDeclaration {
     private Expression bExpr;
 
     public enum RelopType {
-        GE,
-        EQ,
-        LE;
-        
-        public static RelopType parseRelop(String relop){ 
+        GE, EQ, LE;
+
+        public static RelopType parseRelop(String relop) {
             if (">=".equals(relop)) {
                 return RelopType.GE;
             } else if ("=".equals(relop)) {
@@ -25,14 +23,14 @@ public class ConstraintDeclaration {
             } else {
                 // TODO
                 throw new RuntimeException("Not implemented");
-            }         
+            }
         }
     }
 
     public ConstraintDeclaration(String name, String relop, Expression aExpr, Expression bExpr) {
         this(name, RelopType.parseRelop(relop), aExpr, bExpr);
     }
-    
+
     public ConstraintDeclaration(String name, RelopType relop, Expression aExpr, Expression bExpr) {
         this.name = name;
         this.relop = relop;
@@ -54,5 +52,12 @@ public class ConstraintDeclaration {
 
     public Expression getbExpr() {
         return bExpr;
-    }    
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("name: ").append(name).append(", relop: ").append(relop).append(aExpr).append(";").append(bExpr);
+        return sb.toString();
+    }
 }

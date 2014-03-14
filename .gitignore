@@ -2,3 +2,7 @@ target/
 .project
 .settings/
 .classpath
+.idea
+*.iml
+**/gen
+ampl-model/src/main/antlr4/net/vatov/ampl/gen
