@@ -69,6 +69,20 @@ public class OptimModelInterpreterTest {
         assertFalse("Constraint 2 expression evaluated with mistake", interpreter.evaluateConstraint(1));
     }
 
+    //@Test
+    public void testEvaluateUnaryExpression() {
+        assertEquals("c3", model.getConstraints().get(2).getName());
+        model.getVarRef("x1").setBindValue(1d);
+        model.getVarRef("x2").setBindValue(1d);
+        model.getVarRef("x3").setBindValue(1d);
+        Double val = interpreter.evaluateExpression(model.getConstraints().get(2).getaExpr());
+        assertEquals(-3d, val.doubleValue(), 0.1);
+
+        assertEquals("c4", model.getConstraints().get(3).getName());
+        val = interpreter.evaluateExpression(model.getConstraints().get(3).getaExpr());
+        assertEquals(-3d, val.doubleValue(), 0.1);
+    }
+
     @Test
     public void testEvaluateGoal() {
         interpreter.initialBind();

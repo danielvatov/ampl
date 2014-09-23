@@ -41,6 +41,15 @@ public class OptimModel {
         return constraints;
     }
 
+    public ConstraintDeclaration getConstraint(String name) {
+        for (ConstraintDeclaration cd : constraints) {
+            if (name.equals(cd.getName())) {
+                return cd;
+            }
+        }
+        return null;
+    }
+
     public List<ObjectiveDeclaration> getObjectives() {
         return objectives;
     }
