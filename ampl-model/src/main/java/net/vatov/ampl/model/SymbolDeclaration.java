@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class SymbolDeclaration implements Cloneable {
     /**
-     * Редът на константите е важен при сериализиране в xml ({@link
+     * Редът на константите е важен при сериализиране в xml (@link{
      * bg.bas.iit.weboptim.model.xml.SymbolDeclarationConverter.marshal(Object,
      * HierarchicalStreamWriter, MarshallingContext)}) Нещата сериализирани като
      * атрибути в xml-а трябва да са първи TODO: Написаното по-горе да се оправи
